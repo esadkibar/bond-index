@@ -1,4 +1,4 @@
-# Bond İndeksi Hesaplama Aracı
+# Bond İndeksi ile Gereken Enerjiyi Hesaplama Aracı
 
 Bu proje, **Bond Çalışma İndeksi (Wi)** kullanılarak bir malzemenin öğütülmesi için gerekli enerji tüketimini hesaplayan bir web uygulamasıdır.
 
