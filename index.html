@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond İndeksi Hesaplama</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 500px; margin: auto; }
+        label, select, input { display: block; margin: 10px 0; width: 100%; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Bond İndeksi Hesaplama</h2>
+        <label for="wi">Mineral Seç veya Wi (kWh/t) Gir:</label>
+        <select id="wi">
+            <option value="">Manuel Giriş</option>
+            <option value="6.24">Barit (6.24)</option>
+            <option value="9.45">Boksit (9.45)</option>
+            <option value="9.60">Krom (9.60)</option>
+            <option value="13.13">Bakır (13.13)</option>
+            <option value="11.67">Ortoklaz (11.67)</option>
+            <option value="9.30">Albit (9.30)</option>
+            <option value="12.68">Hematit (12.68)</option>
+            <option value="10.21">Manyetit (10.21)</option>
+            <option value="15.40">Spekülarit (15.40)</option>
+            <option value="11.35">Kurşun-Çinko (11.35)</option>
+            <option value="10.13">Fosfat (10.13)</option>
+            <option value="12.77">Kuvars (12.77)</option>
+            <option value="12.18">Kuvarsit (12.18)</option>
+            <option value="13.40">Linyit (13.40)</option>
+        </select>
+        <input type="number" id="wi_manual" placeholder="Wi değerini gir (opsiyonel)">
+
+        <label for="p80">Ürün Tane Boyutu (P80, mic):</label>
+        <input type="number" id="p80">
+
+        <label for="f80">Besleme Tane Boyutu (F80, mic):</label>
+        <input type="number" id="f80">
+
+        <label for="ton">Tonaj (t):</label>
+        <input type="number" id="ton" value="1">
+
+        <label><input type="checkbox" id="safety_factor"> Emniyet Payı (1.25x)</label>
+
+        <button onclick="calculateBondIndex()">Hesapla</button>
+        <h3>Sonuç: <span id="result">-</span> kWh</h3>
+    </div>
+
+    <script>
+        function calculateBondIndex() {
+            let wi = document.getElementById("wi").value;
+            let wiManual = document.getElementById("wi_manual").value;
+            let p80 = parseFloat(document.getElementById("p80").value);
+            let f80 = parseFloat(document.getElementById("f80").value);
+            let ton = parseFloat(document.getElementById("ton").value);
+            let safetyFactor = document.getElementById("safety_factor").checked;
+
+            if (wiManual) {
+                wi = parseFloat(wiManual);
+            } else {
+                wi = parseFloat(wi) || 0;
+            }
+
+            if (!wi || !p80 || !f80 || !ton) {
+                alert("Lütfen tüm değerleri girin.");
+                return;
+            }
+
+            let energy = 10 * wi * ( (1 / Math.sqrt(p80)) - (1 / Math.sqrt(f80)) );
+            energy *= ton;
+
+            if (safetyFactor) {
+                energy *= 1.25;
+            }
+
+            document.getElementById("result").textContent = energy.toFixed(2);
+        }
+    </script>
+</body>
+</html>
