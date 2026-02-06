@@ -1,6 +1,7 @@
 # Bond İndeksi ile Gereken Enerjiyi Hesaplama Aracı
 
 Bu proje, **Bond Çalışma İndeksi (Wi)** kullanılarak bir malzemenin öğütülmesi için gerekli enerji tüketimini hesaplayan bir web uygulamasıdır.
+https://esadkibar.github.io/bond-index/ 
 
 ## 🚀 Özellikler
 - **Mineral Seçimi:** Kullanıcı, **önceden tanımlanmış 14 mineral arasından** seçim yapabilir veya **manuel olarak Wi değerini girebilir**.
