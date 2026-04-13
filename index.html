@@ -5,79 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bond İndeksi ile Gereken Enerjiyi Hesaplama</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .container { max-width: 500px; margin: auto; }
-        label, select, input { display: block; margin: 10px 0; width: 100%; }
-        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
+        /* Genel Ayarlar */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; line-height: 1.6; background-color: #f4f7f6; color: #333; }
+        
+        /* Sayfa Yüklenme Animasyonu */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container { 
+            max-width: 600px; margin: auto; background: white; padding: 30px; 
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            animation: fadeInDown 0.8s ease-out; /* Animasyon burada çağrılıyor */
+        }
+        
+        .project-header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .info-box { background-color: #f0f7ff; padding: 15px; border-left: 5px solid #007bff; border-radius: 4px; margin-bottom: 25px; font-size: 0.95em; color: #0056b3; }
+        label { font-weight: 600; display: block; margin-top: 15px; font-size: 0.9em; }
+        
+        /* Input Animasyonları */
+        select, input[type="number"] { 
+            width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; 
+            border-radius: 6px; box-sizing: border-box; font-size: 1em;
+            transition: all 0.3s ease; /* Yumuşak geçiş */
+        }
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Mavi parlama efekti */
+        }
+
+        .checkbox-container { display: flex; align-items: center; margin-top: 20px; font-weight: normal; background: #fff9e6; padding: 10px; border-radius: 6px; }
+        .checkbox-container input { width: auto; margin-right: 12px; transform: scale(1.2); }
+        
+        /* Buton Animasyonları */
+        button { 
+            width: 100%; padding: 15px; margin-top: 25px; background-color: #007bff; 
+            color: white; border: none; border-radius: 6px; font-size: 1.1em; 
+            font-weight: bold; cursor: pointer; 
+            transition: all 0.2s ease; /* Yumuşak renk geçişi */
+        }
+        button:hover { background-color: #0056b3; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4); }
+        button:active { transform: scale(0.97); } /* Tıklama hissi */
+        
+        /* Sonuç Kutusu ve Pulse Animasyonu */
+        .result-box { margin-top: 25px; padding: 20px; background-color: #e6fffa; color: #234e52; border: 1px solid #b2f5ea; border-radius: 8px; text-align: center; transition: all 0.3s; }
+        .result-box h3 { margin: 0; font-size: 1.5em; }
+        
+        @keyframes pulseResult {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(40, 167, 69, 0); }
+            50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(40, 167, 69, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        .animate-pulse { animation: pulseResult 0.5s ease-out; }
+
+        .footer { margin-top: 40px; font-size: 0.9em; text-align: center; color: #555; border-top: 1px solid #eee; padding-top: 20px; }
+        .highlight { color: #007bff; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Bond İndeksi ile Gereken Enerjiyi Hesaplama</h2>
+        <div class="project-header">
+            <h2>Bond İndeksi Enerji Hesaplayıcı</h2>
+        </div>
+        
+        <div class="info-box">
+            Bu proje, <strong>Bond Çalışma İndeksi (Wi)</strong> kullanılarak bir malzemenin öğütülmesi için gerekli enerji tüketimini hesaplayan bir web uygulamasıdır.
+        </div>
+
         <label for="wi">Mineral Seç veya Wi (kWh/t) Gir:</label>
-        <select id="wi">
-            <option value="">Manuel Giriş</option>
+        <select id="wi" onchange="document.getElementById('wi_manual').value=''">
+            <option value="">Manuel Giriş Yapacağım</option>
             <option value="6.24">Barit (6.24)</option>
             <option value="9.45">Boksit (9.45)</option>
-            <option value="9.60">Krom (9.60)</option>
-            <option value="13.13">Bakır (13.13)</option>
+            <option value="9.60">Kromit (9.60)</option>
+            <option value="13.13">Bakır Cevheri (13.13)</option>
             <option value="11.67">Ortoklaz (11.67)</option>
             <option value="9.30">Albit (9.30)</option>
             <option value="12.68">Hematit (12.68)</option>
             <option value="10.21">Manyetit (10.21)</option>
             <option value="15.40">Spekülarit (15.40)</option>
-            <option value="11.35">Kurşun-Çinko (11.35)</option>
+            <option value="11.35">Kurşun-Çinko Cevheri (11.35)</option>
             <option value="10.13">Fosfat (10.13)</option>
             <option value="12.77">Kuvars (12.77)</option>
             <option value="12.18">Kuvarsit (12.18)</option>
             <option value="13.40">Linyit (13.40)</option>
         </select>
-        <input type="number" id="wi_manual" placeholder="Wi değerini gir (opsiyonel)">
+        <input type="number" id="wi_manual" step="0.01" placeholder="Veya manuel Wi değerini buraya yazın" oninput="document.getElementById('wi').value=''">
 
-        <label for="p80">Ürün Tane Boyutu (P80, mic):</label>
-        <input type="number" id="p80">
+        <label for="unit">Giriş Birimi Seçin:</label>
+        <select id="unit">
+            <option value="mic">Mikron (µm)</option>
+            <option value="mm">Milimetre (mm)</option>
+        </select>
 
-        <label for="f80">Besleme Tane Boyutu (F80, mic):</label>
-        <input type="number" id="f80">
+        <label for="f80">Besleme Tane Boyutu (F80):</label>
+        <input type="number" id="f80" placeholder="Besleme boyutu">
+
+        <label for="p80">Ürün Tane Boyutu (P80):</label>
+        <input type="number" id="p80" placeholder="Ürün boyutu">
 
         <label for="ton">Tonaj (t):</label>
         <input type="number" id="ton" value="1">
 
-        <label><input type="checkbox" id="safety_factor"> Emniyet Payı (1.25x)</label>
+        <label class="checkbox-container">
+            <input type="checkbox" id="safety_factor"> <strong>Emniyet Payı Ekle</strong> (Sonucu 1.25 ile çarp)
+        </label>
 
-        <button onclick="calculateBondIndex()">Hesapla</button>
-        <h3>Sonuç: <span id="result">-</span> kWh</h3>
+        <button onclick="calculateBondIndex()">Enerjiyi Hesapla</button>
+        
+        <div class="result-box" id="result_container">
+            <span>Gereken Toplam Enerji:</span>
+            <h3><span id="result">0.00</span> kWh</h3>
+        </div>
+
+        <div class="footer">
+            Proje Sahibi: <strong>Esad Kibar</strong><br>
+            <span class="highlight">İTÜ Cevher Hazırlama Mühendisliği</span>
+        </div>
     </div>
 
     <script>
         function calculateBondIndex() {
-            let wi = document.getElementById("wi").value;
+            let wiSelect = document.getElementById("wi").value;
             let wiManual = document.getElementById("wi_manual").value;
             let p80 = parseFloat(document.getElementById("p80").value);
             let f80 = parseFloat(document.getElementById("f80").value);
             let ton = parseFloat(document.getElementById("ton").value);
+            let unit = document.getElementById("unit").value;
             let safetyFactor = document.getElementById("safety_factor").checked;
 
-            if (wiManual) {
-                wi = parseFloat(wiManual);
-            } else {
-                wi = parseFloat(wi) || 0;
-            }
+            let wi = wiManual ? parseFloat(wiManual) : parseFloat(wiSelect);
 
             if (!wi || !p80 || !f80 || !ton) {
-                alert("Lütfen tüm değerleri girin.");
+                alert("Lütfen tüm alanları doldurun.");
                 return;
             }
 
-            let energy = 10 * wi * ( (1 / Math.sqrt(p80)) - (1 / Math.sqrt(f80)) );
-            energy *= ton;
+            let p80_calc = unit === "mm" ? p80 * 1000 : p80;
+            let f80_calc = unit === "mm" ? f80 * 1000 : f80;
 
-            if (safetyFactor) {
-                energy *= 1.25;
+            if (f80_calc <= p80_calc) {
+                alert("Besleme boyutu (F80), ürün boyutundan (P80) büyük olmalıdır!");
+                return;
             }
 
+            let energy = 10 * wi * ( (1 / Math.sqrt(p80_calc)) - (1 / Math.sqrt(f80_calc)) );
+            energy *= ton;
+
+            if (safetyFactor) energy *= 1.25;
+
+            // Sonucu ekrana yazdır
             document.getElementById("result").textContent = energy.toFixed(2);
+            
+            // Sonuç kutusuna animasyon tetikleme (Pulse efekti)
+            let resultContainer = document.getElementById("result_container");
+            resultContainer.classList.remove("animate-pulse"); // Önceki animasyonu sıfırla
+            void resultContainer.offsetWidth; // Tarayıcıyı yeniden çizmeye zorla (Reflow)
+            resultContainer.classList.add("animate-pulse"); // Animasyonu tekrar ekle
         }
     </script>
 </body>
